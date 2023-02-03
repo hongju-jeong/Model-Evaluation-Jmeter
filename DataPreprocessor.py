@@ -58,11 +58,13 @@ class DataPreprocessor():
             df_output_question.to_csv(file_name, index=False, encoding='utf-8-sig')
             
 
-    def run(self):
+    def processing(self):
         file_len = self.check_amount_of_items_origin_file()
         print(file_len)
         file_num_list = self.make_separate_faq_dir(file_len)
         self.random_extract_data(file_num_list)
+
+        return file_num_list
 
 
 
@@ -70,4 +72,4 @@ class DataPreprocessor():
 
 if __name__ == "__main__":
     data_preprocessor = DataPreprocessor("./faq-test-file/faq2.5_hong.csv")
-    data_preprocessor.run()
+    data_preprocessor.processing()

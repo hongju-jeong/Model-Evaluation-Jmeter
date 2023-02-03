@@ -1,4 +1,12 @@
 import os
+import sys
+
+dir = os.path.realpath(__file__)
+dir = os.path.abspath(os.path.join(dir,os.pardir))
+
+sys.path.append(dir)
+
+from DataPreprocessor import DataPreprocessor
 
 class ModelEvaluationManager():
     def __init__(self):
@@ -10,6 +18,8 @@ class ModelEvaluationManager():
 
     def run(self):
         self.fine_origin_file()
+        data_preprocessor = DataPreprocessor(self.origin_file_path)
+        file_num_list = data_preprocessor.processing()
         
 
 
