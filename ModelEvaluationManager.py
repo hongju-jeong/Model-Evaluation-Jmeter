@@ -7,6 +7,7 @@ dir = os.path.abspath(os.path.join(dir,os.pardir))
 sys.path.append(dir)
 
 from DataPreprocessor import DataPreprocessor
+from JmeterLauncher import JmeterLauncher
 
 class ModelEvaluationManager():
     def __init__(self):
@@ -19,7 +20,11 @@ class ModelEvaluationManager():
     def run(self):
         self.fine_origin_file()
         data_preprocessor = DataPreprocessor(self.origin_file_path)
-        file_num_list = data_preprocessor.processing()
+        file_num_list = data_preprocessor.run()
+        jmeter_launcher = JmeterLauncher(file_num_list)
+        jmeter_launcher.run()
+
+
         
 
 

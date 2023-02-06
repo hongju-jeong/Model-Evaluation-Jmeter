@@ -81,16 +81,44 @@ class DataPreprocessor():
             os.system("zip "+file_path+"/faq_"+str(file_num)+".zip "+file_path+"/*.json")
             os.system("rm "+file_path+"/*.json")
 
-    
-    
-            
+    def mkdir_for_test(self, file_num_list):
 
-    def processing(self):
+        file_path_prefix = "./faq_"
+        for file_num in file_num_list:
+            os.mkdir(file_path_prefix+str(file_num))
+
+    def unzip_faq_data(self, file_num_list):
+        origin_file_path_prefix = "./separate_faq_"
+        destination_file_path_prefix = "./faq_"
+
+        for file_num in file_num_list:
+            os.system("unzip "+origin_file_path_prefix+str(file_num)+"/faq_"+str(file_num)+".zip -d "+destination_file_path_prefix+str(file_num))
+
+    def make_csv_for_index(self, file_num_list):
+        first_file_path_prefix = "./faq_"
+        second_file_path_prefix = "/separate_faq_"
+
+        for file_num in file_num_list:
+            file_path = first_file_path_prefix+str(file_num)+second_file_path_prefix+str(file_num)+"/Json.csv"
+            file = open(file_path, 'w', encoding='utf-8')
+
+            for i in range(file_num):
+                file.write(str(i))
+                if(i < file_num-1):
+                    file.write('\n')
+
+            file.close()
+ 
+    def run(self):
         file_len = self.check_amount_of_items_origin_file()
         print(file_len)
         file_num_list = self.make_separate_faq_dir(file_len)
         self.random_extract_data(file_num_list)
         self.separate_to_json(file_num_list)
+        self.mkdir_for_test(file_num_list)
+        self.unzip_faq_data(file_num_list)
+        self.make_csv_for_index(file_num_list)
+
 
         return file_num_list
 
