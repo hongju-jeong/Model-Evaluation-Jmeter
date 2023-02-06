@@ -1,4 +1,8 @@
 import json
+import re
+import pandas as pd
+import os
+
 class Comparator():
     def __init__(self, file_num_list):
         self.file_num_list = file_num_list
@@ -35,8 +39,44 @@ class Comparator():
                         make_file.write(',\n')
                 make_file.write(']')
 
+    def mkdir_for_result(self):
+        os.mkdir('result')
+
+    def make_compare_result(self):
+        json_prefix = "./test_faq_"
+        csv_prefix = "./separate_faq_"
+
+        hangul = re.compile('[^ㄱ-ㅣ가-힣]+')
+
+        for file_num in self.file_num_list:
+            json_file = open(json_prefix+str(file_num)+"/faq"+str(file_num)+".json","r", encoding="utf-8")
+            json_data = json.load(json_file)
+            json_file.close()
+
+            df = pd.read_csv(csv_prefix+str(file_num)+"/faq_"+str(file_num)+".csv", sep=',', encoding='utf-8')
+            df_output = pd.DataFrame(columns=("recipient_id","question","answer","response","intent"))
+            
+            count = 0
+            for i in range(len(df)):
+                recipient_id = json_data[i]['recipient_id']
+                question = str(df.iat[i,0])
+                answer = str(df.iat[i,1])
+                response = json_data[i]['text']
+                intent = json_data[i]['intent']
+                answer_han = hangul.sub('', answer)
+                response_han = hangul.sub('', response)
+                if(answer_han != response_han):
+                    df_output.loc[i] = [recipient_id, question, answer, response, intent]
+                    count +=1
+
+            file_name = "./result/result_faq_"+str(file_num)+".csv"
+            df_output.to_csv(file_name, index=False, encoding='utf-8-sig')
+
+
     def run(self):
         self.sort_response_data()
+        self.mkdir_for_result()
+        self.make_compare_result()
 
 
 

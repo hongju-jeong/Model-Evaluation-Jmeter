@@ -8,6 +8,7 @@ sys.path.append(dir)
 
 from DataPreprocessor import DataPreprocessor
 from JmeterLauncher import JmeterLauncher
+from Comparator import Comparator
 
 class ModelEvaluationManager():
     def __init__(self):
@@ -23,6 +24,8 @@ class ModelEvaluationManager():
         file_num_list = data_preprocessor.run()
         jmeter_launcher = JmeterLauncher(file_num_list)
         jmeter_launcher.run()
+        comparator = Comparator(file_num_list)
+        comparator.run()
 
 
         
