@@ -1,6 +1,9 @@
 import pandas as pd
 import os
 import random
+import json
+from collections import OrderedDict
+import copy
 
 class DataPreprocessor():
     def __init__(self, _origin_file_path):
@@ -34,10 +37,13 @@ class DataPreprocessor():
         df_faq = pd.read_csv(self.origin_file_path, sep = ',', encoding='utf-8')
 
         last_file_number = 0
-        if(len(df_faq)<1000):
-            last_file_number = file_num_list.pop()
 
-        for file_number in file_num_list:
+        _file_num_list = copy.deepcopy(file_num_list)
+
+        if(len(df_faq)<1000):
+            last_file_number = _file_num_list.pop()
+
+        for file_number in _file_num_list:
             df_output_question = pd.DataFrame(columns=("question", "answer"))
             random_number_list = []
             i = 0
@@ -55,7 +61,28 @@ class DataPreprocessor():
 
         if(len(df_faq)<1000):
             file_name = "./separate_faq_"+str(last_file_number)+"/faq_"+str(last_file_number)+".csv"
-            df_output_question.to_csv(file_name, index=False, encoding='utf-8-sig')
+            df_faq.to_csv(file_name, index=False, encoding='utf-8-sig')
+
+    def separate_to_json(self, file_num_list):
+
+        for file_num in file_num_list:
+            file_path = "./separate_faq_"+str(file_num)
+            df = pd.read_csv(file_path+'/faq_'+str(file_num)+'.csv', sep=',', encoding='utf-8')
+
+            index_file_data = OrderedDict()
+
+            for i in range(len(df)):
+                make_file = open(file_path+'/'+str(i)+'.json', 'w', encoding='utf-8')
+                index_file_data["sender"] = str(i)
+                index_file_data["message"] = str(df.iat[i,0])
+                json.dump(index_file_data,make_file,ensure_ascii=False)
+                make_file.close()
+
+            os.system("zip "+file_path+"/faq_"+str(file_num)+".zip "+file_path+"/*.json")
+            os.system("rm "+file_path+"/*.json")
+
+    
+    
             
 
     def processing(self):
@@ -63,6 +90,7 @@ class DataPreprocessor():
         print(file_len)
         file_num_list = self.make_separate_faq_dir(file_len)
         self.random_extract_data(file_num_list)
+        self.separate_to_json(file_num_list)
 
         return file_num_list
 
