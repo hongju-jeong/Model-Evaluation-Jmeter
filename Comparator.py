@@ -69,6 +69,12 @@ class Comparator():
                     df_output.loc[i] = [recipient_id, question, answer, response, intent]
                     count +=1
 
+            df_output = df_output.reset_index(drop=True)
+            df_output.loc[0, "질문 개수"] = file_num      # index를 없애던가 맨 위를 가리키도록 바꾸기
+            df_output.loc[0, "정답 횟수"] = file_num - count
+            df_output.loc[0, "정답 비율(%)"] = ((file_num - count)/file_num)*100
+
+
             file_name = "./result/result_faq_"+str(file_num)+".csv"
             df_output.to_csv(file_name, index=False, encoding='utf-8-sig')
 
