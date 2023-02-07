@@ -145,21 +145,12 @@ int jsonNum = Integer.parseInt(amount_of_json)
 BufferedWriter bw = null;
 bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(&quot;./test_faq_${amount_of_json}/faq${amount_of_json}.json&quot;,true), Charset.forName(&quot;UTF-8&quot;)));
 
-if (line_id == &quot;0&quot;) {
-	bw.write(&quot;[&quot;);
-	bw.write(records);
-	bw.write(&quot;,&quot;);
-	bw.newLine();
-}
-else if (line_id == Integer.toString(jsonNum-1)) {
-	bw.write(records);
-	bw.write(&quot;]&quot;);
-}
-else {
-	bw.write(records);
-	bw.write(&quot;,&quot;);
-	bw.newLine();
-}
+
+
+bw.write(records);
+bw.write(&quot;,&quot;);
+bw.newLine();
+
 
 bw.close();</stringProp>
               <stringProp name="scriptLanguage">groovy</stringProp>

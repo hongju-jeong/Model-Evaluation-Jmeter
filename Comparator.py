@@ -11,6 +11,24 @@ class Comparator():
         test_faq_prefix = "./test_faq_"
 
         for file_num in self.file_num_list:
+            origin_file = open(test_faq_prefix+str(file_num)+"/faq"+str(file_num)+".json",'r',encoding='utf-8')
+            lines = origin_file.readlines()
+            origin_file.close()
+
+            wf = open(test_faq_prefix+str(file_num)+"/faq"+str(file_num)+".json",'w',encoding='utf-8')
+            for i in range(len(lines)):
+                if(i == 0):
+                    wf.write('[')
+                    wf.write(lines[i])
+                elif(i == (len(lines)-1)):
+                    wf.write(lines[i][:-2])
+                    wf.write(']')
+                else : wf.write(lines[i])
+            
+            wf.close()
+
+
+        for file_num in self.file_num_list:
             json_file = open(test_faq_prefix+str(file_num)+"/faq"+str(file_num)+".json",'r',encoding='utf-8')
             json_data = json.load(json_file)
             json_file.close()
