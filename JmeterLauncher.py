@@ -2,8 +2,9 @@ import os
 import xml.etree.ElementTree as ET
 
 class JmeterLauncher():
-    def __init__(self, file_num_list):
+    def __init__(self, file_num_list=[], file_len=0):
         self.file_num_list = file_num_list
+        self.file_len = file_len
 
     def mkdir_for_test(self):
         test_file_prefix = "./test_faq_"
@@ -31,9 +32,23 @@ class JmeterLauncher():
 
 
     def launch_jmeter(self):
+        # file_num = self.file_num_list[-1]
+        # self.modify_jmx_file(file_num)
+        # os.system("./jmetercli/apache-jmeter-5.5/bin/jmeter -n -t ./output_"+str(file_num)+".jmx -l ./test_faq_"+str(file_num)+"/test_"+str(file_num)+".log")
         for file_num in self.file_num_list:
             self.modify_jmx_file(file_num)
             os.system("./jmetercli/apache-jmeter-5.5/bin/jmeter -n -t ./output_"+str(file_num)+".jmx -l ./test_faq_"+str(file_num)+"/test_"+str(file_num)+".log")
+
+    def one_queue_test(self):
+        test_file_prefix = "./test_faq_"
+        os.mkdir(test_file_prefix+str(self.file_len))
+
+        self.modify_jmx_file(self.file_len)
+        os.system("./jmetercli/apache-jmeter-5.5/bin/jmeter -n -t ./output_"+str(self.file_len)+".jmx -l ./test_faq_"+str(self.file_len)+"/test_"+str(self.file_len)+".log")
+
+
+
+        
 
     def run(self):
         self.mkdir_for_test()

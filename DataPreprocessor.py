@@ -108,6 +108,56 @@ class DataPreprocessor():
                     file.write('\n')
 
             file.close()
+
+    
+
+    def one_queue_test(self):
+        file_len = self.check_amount_of_items_origin_file()
+        os.mkdir("separate_faq_"+ str(file_len))
+        df_faq = pd.read_csv(self.origin_file_path, sep = ',', encoding='utf-8')
+        file_name = "./separate_faq_"+str(file_len)+"/faq_"+str(file_len)+".csv"
+        df_faq.to_csv(file_name, index=False, encoding='utf-8-sig')
+
+        file_path = "./separate_faq_"+str(file_len)
+        df = pd.read_csv(file_path+'/faq_'+str(file_len)+'.csv', sep=',', encoding='utf-8')
+
+        index_file_data = OrderedDict()
+
+        for i in range(len(df)):
+            make_file = open(file_path+'/'+str(i)+'.json', 'w', encoding='utf-8')
+            index_file_data["sender"] = str(i)
+            index_file_data["message"] = str(df.iat[i,0])
+            json.dump(index_file_data,make_file,ensure_ascii=False)
+            make_file.close()
+
+        os.system("zip "+file_path+"/faq_"+str(file_len)+".zip "+file_path+"/*.json")
+        os.system("rm "+file_path+"/*.json")
+
+        file_path_prefix = "./faq_"
+        os.mkdir(file_path_prefix+str(file_len))
+
+        origin_file_path_prefix = "./separate_faq_"
+        destination_file_path_prefix = "./faq_"
+        os.system("unzip "+origin_file_path_prefix+str(file_len)+"/faq_"+str(file_len)+".zip -d "+destination_file_path_prefix+str(file_len))
+
+        first_file_path_prefix = "./faq_"
+        second_file_path_prefix = "/separate_faq_"
+
+        
+        file_path = first_file_path_prefix+str(file_len)+second_file_path_prefix+str(file_len)+"/Json.csv"
+        file = open(file_path, 'w', encoding='utf-8')
+
+        for i in range(file_len):
+            file.write(str(i))
+            if(i < file_len-1):
+                file.write('\n')
+
+        file.close()
+
+        return file_len
+
+
+
  
     def run(self):
         file_len = self.check_amount_of_items_origin_file()
@@ -118,6 +168,9 @@ class DataPreprocessor():
         self.mkdir_for_test(file_num_list)
         self.unzip_faq_data(file_num_list)
         self.make_csv_for_index(file_num_list)
+
+        ## one queue test
+
 
 
         return file_num_list

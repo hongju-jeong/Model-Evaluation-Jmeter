@@ -22,16 +22,22 @@ class ModelEvaluationManager():
         self.fine_origin_file()
         data_preprocessor = DataPreprocessor(self.origin_file_path)
         file_num_list = data_preprocessor.run()
-        jmeter_launcher = JmeterLauncher(file_num_list)
+        jmeter_launcher = JmeterLauncher(file_num_list = file_num_list)
         jmeter_launcher.run()
         comparator = Comparator(file_num_list)
         comparator.run()
-
-
-        
-
+    
+    def oneQ(self):
+        self.fine_origin_file()
+        data_preprocessor = DataPreprocessor(self.origin_file_path)
+        file_len = data_preprocessor.one_queue_test()
+        jmeter_launcher = JmeterLauncher(file_len = file_len)
+        jmeter_launcher.one_queue_test()
+        comparator = Comparator(file_len= file_len)
+        comparator.one_queue_test()
 
 
 if __name__ == "__main__":
     model_evaluation_manager = ModelEvaluationManager()
-    model_evaluation_manager.run()
+    #model_evaluation_manager.run()
+    model_evaluation_manager.oneQ()
