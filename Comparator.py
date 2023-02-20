@@ -9,6 +9,10 @@ class Comparator():
         self.file_len = file_len
 
     def sort_response_data(self):
+        """
+        JMeter를 통해 받은 response 데이터들을 순서대로 정렬한다.
+        """
+
         test_faq_prefix = "./test_faq_"
 
         for file_num in self.file_num_list:
@@ -27,7 +31,6 @@ class Comparator():
                 else : wf.write(lines[i])
             
             wf.close()
-
 
         for file_num in self.file_num_list:
             json_file = open(test_faq_prefix+str(file_num)+"/faq"+str(file_num)+".json",'r',encoding='utf-8')
@@ -59,9 +62,19 @@ class Comparator():
                 make_file.write(']')
 
     def mkdir_for_result(self):
+        """
+        result 디렉토리를 생성한다.
+        """
+
         os.mkdir('result')
 
     def make_compare_result(self):
+        """
+        response 데이터와 test set을 비교해서 csv파일을 생성한다.
+
+        비교는 한글 필터를 씌워 한글만 비교한다.
+        """
+
         json_prefix = "./test_faq_"
         csv_prefix = "./separate_faq_"
 
@@ -97,7 +110,22 @@ class Comparator():
             file_name = "./result/result_faq_"+str(file_num)+".csv"
             df_output.to_csv(file_name, index=False, encoding='utf-8-sig')
 
+    def run(self):
+        """
+        함수들을 실행한다
+        """
+
+        self.sort_response_data()
+        self.mkdir_for_result()
+        self.make_compare_result()
+
     def one_queue_test(self):
+        """
+        ModelEvaluationManager에서 oneQ 함수를 실행시킬 때 쓰는 함수로
+        저기 위에 있는 모든 함수를 그대로 적었고
+        데이터를 나누지않고 전체 데이터를 테스트한다.
+        """
+
         test_faq_prefix = "./test_faq_"
 
         origin_file = open(test_faq_prefix+str(self.file_len)+"/faq"+str(self.file_len)+".json",'r',encoding='utf-8')
@@ -178,17 +206,7 @@ class Comparator():
 
 
         file_name = "./result/result_faq_"+str(self.file_len)+".csv"
-        df_output.to_csv(file_name, index=False, encoding='utf-8-sig')
-        
-
-    def run(self):
-        self.sort_response_data()
-        self.mkdir_for_result()
-        self.make_compare_result()
-
-
-
-        
+        df_output.to_csv(file_name, index=False, encoding='utf-8-sig')       
 
 if __name__ == "__main__":
     file_num_list = [100,500,660]
